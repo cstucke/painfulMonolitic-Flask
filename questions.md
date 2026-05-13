@@ -93,7 +93,7 @@ After we send the POST request, the activity is inserted into the activities tab
 A teammate adds an `opted_out` boolean column to the `users` table and updates the `POST /activities` API route to check it.
 Is the feature fully implemented? What did they miss?
 ```
-
+The feature is not yet fully implemented. The information will still be added to the users, but, in order to also add the opted_out value, the HTML form route would have to be updated. Furthermore, the lack of functionality of this feature in not GDPR compliant: big time no-no (as we've learned).
 ```
 
 ---
@@ -101,7 +101,7 @@ Is the feature fully implemented? What did they miss?
 **6.** How many rows are created in the database when `nova` logs one activity, given the current seed data?
 Show your working.
 ```
-
+Only one row is created in the activities table, and three rows (for friends with user IDs 2, 3, and 5) are created in the notifications table. I'm not sure what you mean by 'Show your working.', but I see one activity and three notifications created in my SQLite IntelliView Extension.
 ```
 
 ---
@@ -109,7 +109,7 @@ Show your working.
 **7.** You need to delete `maya_r`.
 In what order must you delete rows across the tables, and why does the order matter?
 ```
-
+The order matters because several tables have foreign keys that reference other tables, and the foreign keys are enforced. You must first delete rows from activities, then you can delete friends, games, and notifications in any order. Then, after all of the references have been deleted, you can delete maya_r from the users table.
 ```
 
 ---
@@ -117,7 +117,7 @@ In what order must you delete rows across the tables, and why does the order mat
 **8.** The `notifications` table has a foreign key pointing to `activities`.
 What happens if you try to delete an activity that has notifications attached to it?
 ```
-
+You cannot delete an activity that has notifications attached to it: again, foreign key constraints are enforced. You'll get an error.
 ```
 
 ---
@@ -126,7 +126,7 @@ What happens if you try to delete an activity that has notifications attached to
 You fix it and restart the app to ship the change.
 What else just went down, and for how long?
 ```
-
+While you restart the app to ship the change, everything goes down: you cannot access the app functionality if the app isn't running. It will be down the period in which the server is restarting, so however long it takes for the. server to go from off to on during the restart. We've actually learned ways around this in other courses (specifically cyber security), but we can even allow for hot fixes with things like Blue and Green servers.
 ```
 
 ---
@@ -135,5 +135,5 @@ What else just went down, and for how long?
 Does that solve the problem described in Task 4?
 What is the actual architectural issue?
 ```
-
+If we don't change anything about the functionality, and we just move it into its own function, then nothing will happen. We're just moving the location of the code, not actaully changing the logic of it to be properly functional. The architectural issue is that the notifications and activities routes are groupped together.
 ```
